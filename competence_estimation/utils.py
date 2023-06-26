@@ -197,6 +197,9 @@ class _ECELoss(nn.Module):
     def forward(self, logits, labels):
         logits = torch.from_numpy(logits)
         labels = torch.from_numpy(labels)
+        
+        logits = logits.type(torch.DoubleTensor)
+        labels = labels.type(torch.DoubleTensor)
         softmaxes = F.softmax(logits, dim=1)
         confidences, predictions = torch.max(softmaxes, 1)
         accuracies = predictions.eq(labels)

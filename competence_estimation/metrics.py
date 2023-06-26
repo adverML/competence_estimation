@@ -127,7 +127,7 @@ def compute_metric(
     Return:
         - out: dictionary with (a) name of metric as key and (b) computed value of this metric
     """
-
+    
     possible_metrics = [
         "accuracy",
         "ece",
@@ -170,12 +170,13 @@ def compute_metric(
         .view(-1)
         .numpy()
     )
-
+    
+    print("dafsfsafasfdddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd")
     # Compute accuracy on training and test distribution
     accuracy_ood_test = np.sum(true_false_ood_test) / true_false_ood_test.shape[0]
     accuracy_iid_val = np.sum(true_false_iid_val) / true_false_iid_val.shape[0]
     accuracy_iid_test = np.sum(true_false_iid_test) / true_false_iid_test.shape[0]
-
+    
     ece = _ECELoss(n_bins=ece_bins)
     metric_ece_ood_test = ece(logits_ood_test, labels_ood_test)[0].item()
     metric_ece_iid_val = ece(logits_iid_val, labels_iid_val)[0].item()

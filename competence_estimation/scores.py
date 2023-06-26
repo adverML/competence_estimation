@@ -17,7 +17,6 @@ from numpy.linalg import norm, pinv
 from scipy.special import logsumexp
 
 from competence_estimation.utils import _mmd
-
 from torch import nn
 
 
@@ -267,7 +266,6 @@ def create_score_function(
         score_id = -vlogit_id_val + energy_id_val
 
         def score_function(features, logits):
-
             energy_ood = logsumexp(logits, axis=-1)
             vlogit_ood = norm(np.matmul(features - u, NS), axis=-1) * alpha
             score_ood = -vlogit_ood + energy_ood
