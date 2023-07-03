@@ -171,7 +171,6 @@ def compute_metric(
         .numpy()
     )
     
-    print("dafsfsafasfdddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd")
     # Compute accuracy on training and test distribution
     accuracy_ood_test = np.sum(true_false_ood_test) / true_false_ood_test.shape[0]
     accuracy_iid_val = np.sum(true_false_iid_val) / true_false_iid_val.shape[0]
