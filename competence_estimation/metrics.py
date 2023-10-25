@@ -309,7 +309,17 @@ def compute_metric(
             ).sum()
             / mask.sum()
         ).item()
+        mask_id_test = torch.from_numpy(score_iid_test) < qs
 
+        out["n_95_frac_id_test"] = mask_id_test.sum().item() / logits_iid_test.shape[0] 
+
+        out["n_95_id_test"] = (
+            (
+                torch.from_numpy(logits_iid_test[mask_id_test]).argmax(1)
+                == torch.from_numpy(labels_iid_test[mask_id_test])
+            ).sum()
+            / mask_id_test.sum()
+        ).item()
         # out['n_95_shifted'] =    outs['n_95'] - outs['acc_ood_test']
         # out['n_95_frac'] = (mask.sum()/ mask.shape[0]).item()
         # out['n_95_shifted_iid_val'] =    outs['n_95'] - outs['acc_iid_val']
