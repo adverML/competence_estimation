@@ -39,6 +39,7 @@ def create_score_function(
     w,
     b,
     score_function="max_softmax",
+    lam1=1,
     **kwargs,
 ):
     """
@@ -58,7 +59,9 @@ def create_score_function(
         - scores_iid: Scores on validation set
         - score_function: Score function that gets (features, logits) as input and returns the corresponding score
     """
-
+    
+    print("lam1", lam1)
+    
     # Supported OOD scores as incompetence scores
     assert score_function in [
         "max_softmax",
@@ -236,7 +239,6 @@ def create_score_function(
         Vim Score (due to https://github.com/haoqiwang/vim/blob/master/benchmark.py)
         minor changes w.r.t. DIM variable (adjusted for smaller input dimensions than 1000 dim)
         """
-
         u = -np.matmul(pinv(w), b)
         feature_id_train = x_id_train  # .numpy()
         feature_id_val = x_id_val  # .numpy()
@@ -263,12 +265,13 @@ def create_score_function(
 
         vlogit_id_val = norm(np.matmul(feature_id_val - u, NS), axis=-1) * alpha
         energy_id_val = logsumexp(logit_id_val, axis=-1)
-        score_id = -vlogit_id_val + energy_id_val
+        score_id = -vlogit_id_val + lam1*energy_id_val
 
-        def score_function(features, logits):
+        def score_function(features, logits, lam2=1):
+            print("lam2: ", lam2)
             energy_ood = logsumexp(logits, axis=-1)
             vlogit_ood = norm(np.matmul(features - u, NS), axis=-1) * alpha
-            score_ood = -vlogit_ood + energy_ood
+            score_ood = -vlogit_ood + lam2*energy_ood
             return -score_ood
 
         return -score_id, score_function
