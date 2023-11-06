@@ -312,7 +312,6 @@ def compute_metric(
         mask_id_test = torch.from_numpy(score_iid_test) < qs
 
         out["n_95_frac_id_test"] = mask_id_test.sum().item() / logits_iid_test.shape[0] 
-
         out["n_95_id_test"] = (
             (
                 torch.from_numpy(logits_iid_test[mask_id_test]).argmax(1)
@@ -320,6 +319,28 @@ def compute_metric(
             ).sum()
             / mask_id_test.sum()
         ).item()
+        
+        mask_id_val = torch.from_numpy(score_iid_val) < qs
+        
+        print("masked_id_val", mask_id_val.shape,  logits_iid_val.shape)
+        out["n_95_frac_id_val"] = mask_id_val.sum().item() / logits_iid_val.shape[0]
+        out["n_95_id_val"] = (
+            (
+                torch.from_numpy(logits_iid_val[mask_id_val]).argmax(1)
+                == torch.from_numpy(labels_iid_val[mask_id_val])
+            ).sum()
+            / mask_id_val.sum()
+        ).item()
+        
+        # mask_id_train = torch.from_numpy(score_iid_train) < qs
+        # out["n_95_frac_id_train"] = mask_id_train.sum().item() / logits_iid_train.shape[0]
+        # out["n_95_id_train"] = (
+        #     (
+        #         torch.from_numpy(logits_iid_train[mask_id_train]).argmax(1)
+        #         == torch.from_numpy(labels_iid_train[mask_id_train])
+        #     ).sum()
+        #     / mask_id_train.sum()
+        # ).item()
         # out['n_95_shifted'] =    outs['n_95'] - outs['acc_ood_test']
         # out['n_95_frac'] = (mask.sum()/ mask.shape[0]).item()
         # out['n_95_shifted_iid_val'] =    outs['n_95'] - outs['acc_iid_val']
