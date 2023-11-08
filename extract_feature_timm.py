@@ -15,7 +15,7 @@ from torch.cuda.amp import autocast
 import timm
 from torchvision import transforms
 
-from attack import attack_pgd_restart, ctx_noparamgrad
+# from attack import attack_pgd_restart, ctx_noparamgrad
 from torchvision.models.feature_extraction import get_graph_node_names, create_feature_extractor
 import foolbox
 from foolbox import PyTorchModel, accuracy, samples
@@ -194,24 +194,26 @@ def main():
         fmodel = PyTorchModel(model, bounds=(0, 1), preprocessing=preprocessing)
 
     if args.attack == 'pgd':
-        def test_attacker(x, y):
-            with ctx_noparamgrad(model):
-                adv_delta = attack_pgd_restart(
-                    model=model,
-                    X=x,
-                    y=y,
-                    eps=args.ε,
-                    alpha=args.ε / 4,
-                    attack_iters=40,
-                    n_restarts=10,
-                    rs=True,
-                    verbose=True,
-                    linf_proj=True,
-                    l2_proj=False,
-                    l2_grad_update=False,
-                    cuda=torch.cuda.is_available()
-                )
-            return x + adv_delta
+        print("Not implemented")
+        pass
+        # def test_attacker(x, y):
+        #     with ctx_noparamgrad(model):
+        #         adv_delta = attack_pgd_restart(
+        #             model=model,
+        #             X=x,
+        #             y=y,
+        #             eps=args.ε,
+        #             alpha=args.ε / 4,
+        #             attack_iters=40,
+        #             n_restarts=10,
+        #             rs=True,
+        #             verbose=True,
+        #             linf_proj=True,
+        #             l2_proj=False,
+        #             l2_grad_update=False,
+        #             cuda=torch.cuda.is_available()
+        #         )
+        #     return x + adv_delta
         
     elif args.attack == 'fgsm':
         attack = FGSM()
